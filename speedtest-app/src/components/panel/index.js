@@ -68,13 +68,26 @@ class Panel extends Component {
               average: { download: average(arraySpeed) },
               controls: {...this.state.controls, download: true} 
             })
+            arraySpeed = this.state.upload;
             setTimeout( () => { isPaused = false }, 1000)
           } else {
             this.setState({ 
               average: { ...this.state.average, upload: average(arraySpeed) },
               controls: {...this.state.controls, upload: true} 
             })
+            
             clearInterval(speedInterval)
+
+            let averageObj = {date: new Date(),download: this.state.average.download,upload: this.state.average.upload}
+            let history = localStorage.getItem('history');
+            let updateHistory = history ? JSON.parse(history) : [];
+            updateHistory.unshift(averageObj)
+            if(updateHistory.length > 2) { //result history limit
+              updateHistory.pop()
+            }
+            localStorage.setItem('history', JSON.stringify(updateHistory));
+            this.props.updateHistory();
+            console.log(JSON.parse(localStorage.getItem('history')))
           }
         }
       }
@@ -103,7 +116,7 @@ class Panel extends Component {
               {
                 this.state.average.download ?
                   <p className="panel__result__speed--number animated fadeInDown">
-                    <span>{this.state.average.download}</span> Mbps
+                    <span>{ this.state.average.download }</span> Mbps
                   </p>
                 : ''
               }
@@ -116,7 +129,7 @@ class Panel extends Component {
               {
                 this.state.average.upload ?
                   <p className="panel__result__speed--number animated fadeInUp">
-                    <span>90</span> Mbps
+                    <span>{ this.state.average.upload }</span> Mbps
                   </p>
                 : ''
               }

@@ -3,6 +3,17 @@ import Item from './item';
 import './history.scss';
 
 class History extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      history: []
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({history:nextProps.history})
+  }
+
   render() {
     return (
       <div className="history">
@@ -10,16 +21,16 @@ class History extends Component {
 
         <div className="history__container">
           
-          <Item 
-            date="11/04/2019 - 10h39m"
-            download="100"
-            upload="90"
-          />
-          <Item 
-            date="11/04/2019 - 10h39m"
-            download="100"
-            upload="90"
-          />
+          {
+            this.state.history.map((item, key) => 
+              <Item 
+                key={key}
+                date={item.date}
+                download={item.download}
+                upload={item.upload}
+              />
+            )
+          }
 
         </div>
 

@@ -4,6 +4,24 @@ import History from './components/history';
 import Panel from './components/panel';
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      history: []
+    };
+  }
+
+  componentDidMount() {
+    this.updateHistory();
+  }
+
+  updateHistory = () => {
+    let history = localStorage.getItem('history')
+    if(history) {
+      this.setState({ history: JSON.parse(localStorage.getItem('history')) })
+    }
+  }
+  
   render() {
     return (
       <div className="speedtest">
@@ -11,10 +29,12 @@ class App extends Component {
           <Topbar />
           <div className="row">
             <div className="speedtest__history">
-              <History />
+              <History
+              history={this.state.history} />
             </div>
             <div className="speedtest__main">
-              <Panel />
+              <Panel 
+              updateHistory={this.updateHistory}/>
             </div>
           </div>
         </div>

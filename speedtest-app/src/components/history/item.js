@@ -1,10 +1,11 @@
 import React from 'react';
+import {formatDate} from '../../helpers';
 
 const Item = ({date, download, upload}) => {
   return(
     <div className="history__item">
       <p className="history__item--date">
-        {date}
+        {formatDate(date)}
       </p>
       <p className="history__item--speed">
         Download
