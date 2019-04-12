@@ -22,14 +22,16 @@ class History extends Component {
         <div className="history__container">
           
           {
-            this.state.history.map((item, key) => 
-              <Item 
-                key={key}
-                date={item.date}
-                download={item.download}
-                upload={item.upload}
-              />
-            )
+            this.state.history.length > 0 ?  
+              this.state.history.map((item, key) => 
+                <Item 
+                  key={key}
+                  date={item.date}
+                  download={item.download}
+                  upload={item.upload}
+                />
+              )
+            : 'Nenhum resultado encontrado'  
           }
 
         </div>

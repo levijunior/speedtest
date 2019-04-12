@@ -43,13 +43,14 @@ class Panel extends Component {
         download: false,
         upload: false
       }
-    }, () => this.speedTest())
+    }, () => this.speedTest());
+    this.props.updateHistory();
   }
 
   runSpeed = () => {
     let arraySpeed = this.state.download;
 
-    let speedInterval = setInterval(speedTimer.bind(this), 100);
+    let speedInterval = setInterval(speedTimer.bind(this), 500);
     let speedIndice = 0;
     let  isPaused = false
 
@@ -86,8 +87,6 @@ class Panel extends Component {
               updateHistory.pop()
             }
             localStorage.setItem('history', JSON.stringify(updateHistory));
-            this.props.updateHistory();
-            console.log(JSON.parse(localStorage.getItem('history')))
           }
         }
       }
@@ -96,7 +95,6 @@ class Panel extends Component {
 
     
   render() {
-    console.log(this.state)
     return (
       <div className="panel">
         <div className="panel__chart">

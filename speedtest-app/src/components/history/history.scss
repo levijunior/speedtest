@@ -16,6 +16,12 @@
     margin-bottom: 40px;
   }
 
+  &__container {
+    color: white;
+    font-size: 12px;
+    min-block-size: 372px;
+  }
+
   &__item {
     border-radius: 7px;
     background-color: white;
