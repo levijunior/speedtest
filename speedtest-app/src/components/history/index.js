@@ -23,7 +23,7 @@ class History extends Component {
 
         </div>
 
-        <button className="button--more"> + </button>
+        <button className="button--more" onClick={ () => alert('Funcionalidade em contrução') }> + </button>
       </div>
     );
   }
