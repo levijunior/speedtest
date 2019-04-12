@@ -1,0 +1,72 @@
+.panel {
+  background: url('/imgs/grid.png') #f6f9fe;
+  display: flex;
+  height: 100%;
+
+  &__chart {
+    width: 60%;
+    text-align: center;
+    padding-top: 88px;
+    background: url('/imgs/chart.png') center bottom no-repeat;
+    background-size: contain;
+
+    &--speed {
+      opacity: 0.9;
+      font-size: 135.5px;
+      font-weight: 900;
+      color: rgba(113, 135, 172, 0.9);
+      margin: 0;
+      line-height: .7;
+    }
+    &--unit {
+      font-size: 27px;
+      color: #7187ac;
+      margin: 10px 0;
+    }
+  }
+
+  &__result {
+    width: 40%;
+    background: #e9ecf1;
+    padding: 70px;
+    padding-top: 90px;
+    padding-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__speed {
+      &--title {
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        font-weight: 500;
+        color: #7187ac;
+        text-transform: uppercase;
+        margin: 0;
+        margin-bottom: 10px;
+
+        img {
+          margin-right: 5px;
+        }
+      }
+      &--number {
+        color: #283b5b;
+        font-size: 27px;
+        margin: 0;
+
+        span {
+          font-size: 95px;
+          font-weight: 900;
+          color: rgba(40, 59, 91, 0.9);
+          line-height: .7;
+        }
+      }
+    }
+    hr {
+      margin: 40px 0;
+      border-top: 1px solid #8093b5;
+      opacity: .5;
+    }
+  }
+}
