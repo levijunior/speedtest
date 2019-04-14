@@ -11,6 +11,7 @@ class History extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if(nextProps.history)
     this.setState({history:nextProps.history.slice(0,2)})
   }
 
