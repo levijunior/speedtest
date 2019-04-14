@@ -20,7 +20,7 @@ class Modal extends Component {
           this.state.open ?
             <div className="modal">
               <div className="modal__container">
-                {/* <div className="modal__container--close" onClick={() => this.props.handleModal(false)}> x </div> */}
+                <div className="modal__container--close" onClick={() => this.props.handleModal(false)}> + </div>
                 {this.props.children}
               </div>
             </div>  

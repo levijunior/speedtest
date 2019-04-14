@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import Button from '../button';
-import { randomSpeed, average } from '../../helpers';
+import { average } from '../../helpers';
+import SpeedService from '../../services/speed.service';
+import LocalstorageService from '../../services/localstorage.service';
 import './panel.scss';
 
 class Panel extends Component {
   constructor(props){
     super(props);
     this.state = {
+      limit:{
+        time: 10000, 
+        interval: 500
+      },
+      speed: 0,
       download: [],
       upload: [],
       average: {
         download: null,
         upload: null
       },
-      controls: {
-        download: false,
-        upload: false
-      }
+      restart: false
     };
   }
 
@@ -25,10 +29,7 @@ class Panel extends Component {
   }
 
   speedTest = () => {
-    this.setState({ 
-      download: randomSpeed(),
-      upload: randomSpeed()
-    }, () => this.runSpeed());
+    this.intervalDownload = setInterval(this.calculateDownloadSpeed, this.state.limit.interval);
   }
 
   restartTest = () => {
@@ -39,58 +40,57 @@ class Panel extends Component {
         download: null,
         upload: null
       },
-      controls: {
-        download: false,
-        upload: false
-      }
-    }, () => this.speedTest());
+      restart: false
+    })
     this.props.updateHistory();
+    this.speedTest();
   }
 
-  runSpeed = () => {
-    let arraySpeed = this.state.download;
+  calculateDownloadSpeed = () => {
+    let speed = SpeedService.checkDownloadSpeed();
+    let download = this.state.download.concat(speed);
+    this.setState({speed, download});
+    this.stopCalculate('download', this.intervalDownload);
+  }
 
-    let speedInterval = setInterval(speedTimer.bind(this), 500);
-    let speedIndice = 0;
-    let  isPaused = false
+  calculateUploadSpeed = () => {
+    let speed = SpeedService.checkUploadSpeed();
+    let upload = this.state.upload.concat(speed);
+    this.setState({speed, upload});
+    this.stopCalculate('upload', this.intervalUpload);
+  }
 
-    function speedTimer() {
-      if(!isPaused) {
-        document.getElementById("chart-speed").innerHTML = arraySpeed[speedIndice];
-        
-        speedIndice++;     
+  stopCalculate = (test_type, intervalFunction) => {
+    if(this.state[test_type].length >= (this.state.limit.time/this.state.limit.interval)) {
+      clearInterval(intervalFunction)
+      this.calculateAverage(test_type);
 
-        if(speedIndice > arraySpeed.length - 1) {
-          speedIndice = 0;
-          isPaused = true;
-          
-          if(!this.state.controls.download) {
-            this.setState({ 
-              average: { download: average(arraySpeed) },
-              controls: {...this.state.controls, download: true} 
-            })
-            arraySpeed = this.state.upload;
-            setTimeout( () => { isPaused = false }, 1000)
-          } else {
-            this.setState({ 
-              average: { ...this.state.average, upload: average(arraySpeed) },
-              controls: {...this.state.controls, upload: true} 
-            })
-            
-            clearInterval(speedInterval)
-
-            let averageObj = {date: new Date(),download: this.state.average.download,upload: this.state.average.upload}
-            let history = localStorage.getItem('history');
-            let updateHistory = history ? JSON.parse(history) : [];
-            updateHistory.unshift(averageObj)
-            if(updateHistory.length > 2) { //result history limit
-              updateHistory.pop()
-            }
-            localStorage.setItem('history', JSON.stringify(updateHistory));
-          }
-        }
+      if(test_type === 'download') {
+        this.intervalUpload = setInterval(this.calculateUploadSpeed, this.state.limit.interval);
+      }
+      if(test_type === 'upload') {
+        this.setState({restart: true});
+        this.setHistoryLocalstorage();
       }
     }
+  }
+
+  calculateAverage = (test_type) => {
+    let array_type = this.state[test_type]
+    this.setState({ 
+      average: { 
+        ...this.state.average,
+        [test_type]: average(array_type) 
+      }
+    })
+  }
+
+  setHistoryLocalstorage = () => {
+    let averageObj = {date: new Date(), download: this.state.average.download, upload: this.state.average.upload};
+    let history = LocalstorageService.get('history');
+    let updateHistory = history ? history : [];
+    updateHistory.unshift(averageObj); 
+    LocalstorageService.set('history', JSON.stringify(updateHistory));
   }
 
     
@@ -98,8 +98,8 @@ class Panel extends Component {
     return (
       <div className="panel">
         <div className="panel__chart">
-          <p className="panel__chart--speed animated bounceInUp" id="chart-speed">
-            0
+          <p className="panel__chart--speed animated bounceInUp">
+            {this.state.speed}
           </p> 
           <p className="panel__chart--unit animated bounceInUp">
             Mbps
@@ -134,7 +134,7 @@ class Panel extends Component {
             </div>
           </div>
           {
-            this.state.controls.upload ?
+            this.state.restart ?
               <div className="panel__result__container animated bounceInUp delay-1s">
                 <Button 
                   restart={this.restartTest}

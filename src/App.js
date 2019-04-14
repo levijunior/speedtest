@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Topbar from './components/topbar';
 import History from './components/history';
 import Panel from './components/panel';
+import LocalstorageService from './services/localstorage.service';
 
 class App extends Component {
   constructor(props){
@@ -16,10 +17,8 @@ class App extends Component {
   }
 
   updateHistory = () => {
-    let history = localStorage.getItem('history')
-    if(history) {
-      this.setState({ history: JSON.parse(localStorage.getItem('history')) })
-    }
+    let history = LocalstorageService.get('history');
+    this.setState({ history })
   }
   
   render() {

@@ -11,7 +11,7 @@ class History extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({history:nextProps.history})
+    this.setState({history:nextProps.history.slice(0,2)})
   }
 
   render() {
