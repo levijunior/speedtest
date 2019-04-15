@@ -55,7 +55,7 @@ class Topbar extends Component {
           handleModal={this.handleModal}
         >
           <div className="name-changer">
-            <input type="text" value={this.state.name}  onChange={this.handleInput} />
+            <input type="text" value={this.state.name}  onChange={this.handleInput} placeholder="Digite seu nome aqui" />
             <button onClick={ () => this.handleModal(false) }>OK</button>
           </div>
         </Modal>
